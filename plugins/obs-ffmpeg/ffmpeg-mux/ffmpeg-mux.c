@@ -14,16 +14,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-// #define ENABLE_DEBUG_STUFF 1
-
 #ifdef _WIN32
 #include <io.h>
 #include <fcntl.h>
 #define inline __inline
-
-#ifdef ENABLE_DEBUG_STUFF
-#include <windows.h>
-#endif
 
 #endif
 
@@ -460,18 +454,6 @@ static inline bool open_output_file(struct ffmpeg_mux *ffm)
 	return true;
 }
 
-#ifdef ENABLE_DEBUG_STUFF
-void log_func(void *data, int level, const char *str, va_list args)
-{
-	char bla[4096];
-
-	if (level <= AV_LOG_INFO) {
-		vsprintf(bla, str, args);
-		OutputDebugStringA(bla);
-	}
-}
-#endif
-
 static bool ffmpeg_mux_init_internal(struct ffmpeg_mux *ffm, int argc,
 		char *argv[])
 {
@@ -489,9 +471,6 @@ static bool ffmpeg_mux_init_internal(struct ffmpeg_mux *ffm, int argc,
 	}
 
 	av_register_all();
-#ifdef ENABLE_DEBUG_STUFF
-	av_log_set_callback(log_func);
-#endif
 
 	output_format = av_guess_format(NULL, ffm->params.file, NULL);
 	if (output_format == NULL) {
